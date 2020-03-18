@@ -1,7 +1,11 @@
 # FastAPIはStarletteから直接継承するクラスです
 # Starletteのすべての機能を利用出来ます
-from fastapi import FastAPI
+# @see https://fastapi.tiangolo.com/tutorial/query-params-str-validations/
+# @see https://fastapi.tiangolo.com/tutorial/path-params-numeric-validations/
+from fastapi import FastAPI, Query, Path
 from enum import Enum
+# @see https://fastapi.tiangolo.com/tutorial/body/
+from pydantic import BaseModel
 
 from typing import Optional
 
@@ -10,6 +14,14 @@ class ModelName(str, Enum):
     alexnet = "alexnet"
     resnet = "resnet"
     lenet = "lenet"
+
+
+# POST 等で受け取るデータ構造
+class Item(BaseModel):
+    name: str
+    description: str = None
+    price: float
+    tax: float = None
 
 
 app = FastAPI()
@@ -21,8 +33,33 @@ async def read_root():
 
 
 @app.get("/items/{item_id}")
-async def read_item(item_id: int, limit: Optional[int] = None):
+async def read_item(
+        item_id: int = Path(..., title="The ID of the item to get", ge=0, le=1000),
+        limit: Optional[int] = None
+):
     return {"item_id": item_id, "limit": limit}
+
+
+@app.get("/items/")
+async def read_items(
+        q: str = Query(
+            None,
+            description="Query string for the items to search in the database that have a good match",
+            min_length=3,
+            max_length=50,
+            regex="^fixed_query$",
+            deprecated=True,
+        )
+):
+    results = {"items": [{"item_id": "Foo"}, {"item_id": "Bar"}]}
+    if q:
+        results.update({"q": q})
+    return results
+
+
+@app.post("/items/")
+async def create_item(item: Item):
+    return item
 
 
 # パスの操作は順番に評価されます / 順番に注意
