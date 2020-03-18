@@ -5,7 +5,8 @@
 # @see https://fastapi.tiangolo.com/tutorial/body-fields/
 # @see https://fastapi.tiangolo.com/tutorial/header-params/
 # @see https://fastapi.tiangolo.com/tutorial/response-status-code/
-from fastapi import FastAPI, Query, Path, Body, Header, status
+# @see https://fastapi.tiangolo.com/tutorial/handling-errors/
+from fastapi import FastAPI, Query, Path, Body, Header, status, HTTPException
 from enum import Enum
 # @see https://fastapi.tiangolo.com/tutorial/body/
 # @see https://fastapi.tiangolo.com/tutorial/extra-models/
@@ -70,10 +71,23 @@ def fake_save_user(user_in: UserIn):
 
 app = FastAPI()
 
+items = {"foo": "The Foo Wrestlers"}
+
 
 @app.get("/")
 async def read_root():
     return {"Hello": "World"}
+
+
+@app.get("/items-header/{item_id}")
+async def read_item_header(item_id: str):
+    if item_id not in items:
+        raise HTTPException(
+            status_code=404,
+            detail="Item not found",
+            headers={"X-Error": "There goes my error"},
+        )
+    return {"item": items[item_id]}
 
 
 @app.get("/items/{item_id}")
