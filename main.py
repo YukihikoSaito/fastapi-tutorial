@@ -2,12 +2,13 @@
 # Starletteのすべての機能を利用出来ます
 # @see https://fastapi.tiangolo.com/tutorial/query-params-str-validations/
 # @see https://fastapi.tiangolo.com/tutorial/path-params-numeric-validations/
-from fastapi import FastAPI, Query, Path
+# @see https://fastapi.tiangolo.com/tutorial/body-fields/
+from fastapi import FastAPI, Query, Path, Body
 from enum import Enum
 # @see https://fastapi.tiangolo.com/tutorial/body/
-from pydantic import BaseModel
-
-from typing import Optional
+from pydantic import BaseModel, HttpUrl
+# @see https://fastapi.tiangolo.com/tutorial/body-nested-models/
+from typing import Optional, List, Set
 
 
 class ModelName(str, Enum):
@@ -16,12 +17,19 @@ class ModelName(str, Enum):
     lenet = "lenet"
 
 
+class Image(BaseModel):
+    url: HttpUrl
+    name: str
+
+
 # POST 等で受け取るデータ構造
 class Item(BaseModel):
     name: str
     description: str = None
     price: float
     tax: float = None
+    tags: Set[str] = []
+    images: List[Image] = None
 
 
 app = FastAPI()
@@ -58,7 +66,27 @@ async def read_items(
 
 
 @app.post("/items/")
-async def create_item(item: Item):
+async def create_item(
+        item: Item = Body(
+            ...,
+            example={
+                "name": "Foo",
+                "description": "A very nice Item",
+                "price": 35.4,
+                "tax": 3.2,
+                "tags": [
+                    "rock",
+                    "metal"
+                ],
+                "images": [
+                    {
+                        "url": "http://example.com/baz.jpg",
+                        "name": "The Foo live"
+                    }
+                ]
+            },
+        )
+):
     return item
 
 
