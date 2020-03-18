@@ -4,7 +4,8 @@
 # @see https://fastapi.tiangolo.com/tutorial/path-params-numeric-validations/
 # @see https://fastapi.tiangolo.com/tutorial/body-fields/
 # @see https://fastapi.tiangolo.com/tutorial/header-params/
-from fastapi import FastAPI, Query, Path, Body, Header
+# @see https://fastapi.tiangolo.com/tutorial/response-status-code/
+from fastapi import FastAPI, Query, Path, Body, Header, status
 from enum import Enum
 # @see https://fastapi.tiangolo.com/tutorial/body/
 # @see https://fastapi.tiangolo.com/tutorial/extra-models/
@@ -107,7 +108,7 @@ async def read_items(
     return results
 
 
-@app.post("/items/")
+@app.post("/items/", status_code=status.HTTP_201_CREATED)
 async def create_item(
         item: Item = Body(
             ...,
