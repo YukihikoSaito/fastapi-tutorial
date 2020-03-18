@@ -3,7 +3,8 @@
 # @see https://fastapi.tiangolo.com/tutorial/query-params-str-validations/
 # @see https://fastapi.tiangolo.com/tutorial/path-params-numeric-validations/
 # @see https://fastapi.tiangolo.com/tutorial/body-fields/
-from fastapi import FastAPI, Query, Path, Body
+# @see https://fastapi.tiangolo.com/tutorial/header-params/
+from fastapi import FastAPI, Query, Path, Body, Header
 from enum import Enum
 # @see https://fastapi.tiangolo.com/tutorial/body/
 from pydantic import BaseModel, HttpUrl
@@ -57,9 +58,16 @@ async def read_items(
             max_length=50,
             regex="^fixed_query$",
             deprecated=True,
-        )
+        ),
+        user_agent: str = Header(None)
 ):
-    results = {"items": [{"item_id": "Foo"}, {"item_id": "Bar"}]}
+    results = {
+        "items": [
+            {"item_id": "Foo"},
+            {"item_id": "Bar"}
+        ],
+        "User-Agent": user_agent
+    }
     if q:
         results.update({"q": q})
     return results
