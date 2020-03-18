@@ -15,7 +15,7 @@ https://www.starlette.io/
 % pip3 --version
 pip 19.0.3 from ~/fastapi-tutorial/venv/lib/python3.7/site-packages/pip-19.0.3-py3.7.egg/pip (python 3.7)
 
-% ./venv/bin/pip3 install starlette
+% pip3 install starlette
 Installing collected packages: starlette
 Successfully installed starlette-0.13.2
 ```
@@ -56,8 +56,8 @@ https://fastapi.tiangolo.com/async/#in-a-hurry
 
 非同期コード、同時実行性、および並列処理に関する情報
 
-他のものと通信して応答するのを待つ必要がない場合は、を使用します`async def`
-応答を待つ必要がある場合 normal `def` ←こちらを使います
+- 他のものと通信して応答するのを待つ必要がない場合は、を使用します`async def`
+- 応答を待つ必要がある場合 normal `def` ←こちらを使います
 
 ## Run it
 ```
