@@ -79,7 +79,7 @@ async def read_root():
     return {"Hello": "World"}
 
 
-@app.get("/items-header/{item_id}")
+@app.get("/items-header/{item_id}", tags=["items"])
 async def read_item_header(item_id: str):
     if item_id not in items:
         raise HTTPException(
@@ -90,7 +90,7 @@ async def read_item_header(item_id: str):
     return {"item": items[item_id]}
 
 
-@app.get("/items/{item_id}")
+@app.get("/items/{item_id}", tags=["items"])
 async def read_item(
         item_id: int = Path(..., title="The ID of the item to get", ge=0, le=1000),
         limit: Optional[int] = None
@@ -98,7 +98,7 @@ async def read_item(
     return {"item_id": item_id, "limit": limit}
 
 
-@app.get("/items/")
+@app.get("/items/", tags=["items"])
 async def read_items(
         q: str = Query(
             None,
@@ -122,7 +122,8 @@ async def read_items(
     return results
 
 
-@app.post("/items/", status_code=status.HTTP_201_CREATED)
+# docstring での説明にも対応します
+@app.post("/items/", status_code=status.HTTP_201_CREATED, tags=["items"], response_model=Item, summary="Create an item")
 async def create_item(
         item: Item = Body(
             ...,
@@ -144,22 +145,31 @@ async def create_item(
             },
         )
 ):
+    """
+    Create an item with all the information:
+
+    - **name**: each item must have a name
+    - **description**: a long description
+    - **price**: required
+    - **tax**: if the item doesn't have tax, you can omit this
+    - **tags**: a set of unique tag strings for this item
+    """
     return item
 
 
 # パスの操作は順番に評価されます / 順番に注意
 # @see https://fastapi.tiangolo.com/tutorial/path-params/
-@app.get("/users/me")
+@app.get("/users/me", tags=["users"])
 async def read_user_me():
     return {"user_id": "the current user"}
 
 
-@app.get("/users/{user_id}")
+@app.get("/users/{user_id}", tags=["users"])
 async def read_user(user_id: str):
     return {"user_id": user_id}
 
 
-@app.post("/user/", response_model=UserOut)
+@app.post("/user/", response_model=UserOut, tags=["users"])
 async def create_user(*, user_in: UserIn):
     user_saved = fake_save_user(user_in)
     return user_saved
@@ -172,3 +182,8 @@ async def get_model(model_name: ModelName):
     if model_name.value == "lenet":
         return {"model_name": model_name, "message": "LeCNN all the images"}
     return {"model_name": model_name, "message": "Have some residuals"}
+
+
+@app.get("/elements/", tags=["items"], deprecated=True)
+async def read_elements():
+    return [{"item_id": "Foo"}]
