@@ -34,27 +34,26 @@ class Item(BaseModel):
     images: List[Image] = None
 
 
+# ユーザー情報のベース(雛形)
+class UserBase(BaseModel):
+    username: str
+    email: EmailStr
+    full_name: str = None
+
+
 # ユーザーから受け付けるデータ構造
-class UserIn(BaseModel):
-    username: str
+class UserIn(UserBase):
     password: str
-    email: EmailStr
-    full_name: str = None
 
 
-# ユーザーに返戻するデータ構造 (password は除外)
-class UserOut(BaseModel):
-    username: str
-    email: EmailStr
-    full_name: str = None
+# ユーザーに返戻するデータ構造 (class UserBase と同一)
+class UserOut(UserBase):
+    pass
 
 
 # 内部データベースで持つデータ構造
-class UserInDB(BaseModel):
-    username: str
+class UserInDB(UserBase):
     hashed_password: str
-    email: EmailStr
-    full_name: str = None
 
 
 def make_fake_password_hash(raw_password: str):
