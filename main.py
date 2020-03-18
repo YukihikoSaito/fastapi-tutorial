@@ -7,7 +7,8 @@
 from fastapi import FastAPI, Query, Path, Body, Header
 from enum import Enum
 # @see https://fastapi.tiangolo.com/tutorial/body/
-from pydantic import BaseModel, HttpUrl
+# @see https://fastapi.tiangolo.com/tutorial/extra-models/
+from pydantic import BaseModel, HttpUrl, EmailStr
 # @see https://fastapi.tiangolo.com/tutorial/body-nested-models/
 from typing import Optional, List, Set
 
@@ -31,6 +32,40 @@ class Item(BaseModel):
     tax: float = None
     tags: Set[str] = []
     images: List[Image] = None
+
+
+# ユーザーから受け付けるデータ構造
+class UserIn(BaseModel):
+    username: str
+    password: str
+    email: EmailStr
+    full_name: str = None
+
+
+# ユーザーに返戻するデータ構造 (password は除外)
+class UserOut(BaseModel):
+    username: str
+    email: EmailStr
+    full_name: str = None
+
+
+# 内部データベースで持つデータ構造
+class UserInDB(BaseModel):
+    username: str
+    hashed_password: str
+    email: EmailStr
+    full_name: str = None
+
+
+def make_fake_password_hash(raw_password: str):
+    return "super-secret" + raw_password
+
+
+def fake_save_user(user_in: UserIn):
+    hashed_password = make_fake_password_hash(user_in.password)
+    user_in_db = UserInDB(**user_in.dict(), hashed_password=hashed_password)
+    print("User saved! ..not really")
+    return user_in_db
 
 
 app = FastAPI()
@@ -108,6 +143,12 @@ async def read_user_me():
 @app.get("/users/{user_id}")
 async def read_user(user_id: str):
     return {"user_id": user_id}
+
+
+@app.post("/user/", response_model=UserOut)
+async def create_user(*, user_in: UserIn):
+    user_saved = fake_save_user(user_in)
+    return user_saved
 
 
 @app.get("/model/{model_name}")
