@@ -7,8 +7,10 @@
 # @see https://fastapi.tiangolo.com/tutorial/response-status-code/
 # @see https://fastapi.tiangolo.com/tutorial/handling-errors/
 # @see https://fastapi.tiangolo.com/tutorial/security/first-steps/
+# @see https://fastapi.tiangolo.com/tutorial/middleware/
+import time
 from fastapi import FastAPI, Query, Path, Body, Header, status, \
-    HTTPException, Depends
+    HTTPException, Depends, Request
 # @see https://fastapi.tiangolo.com/tutorial/security/simple-oauth2/
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 # @see https://fastapi.tiangolo.com/tutorial/encoder/
@@ -182,6 +184,15 @@ async def get_current_active_user(current_user: UserBase = Depends(get_current_u
     if current_user.disabled:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Inactive user")
     return current_user
+
+
+@app.middleware("http")
+async def add_process_time_header(request: Request, call_next):
+    start_time = time.time()
+    response = await call_next(request)
+    process_time = time.time() - start_time
+    response.headers["X-Process-Time"] = str(process_time)
+    return response
 
 
 @app.post("/token", response_model=Token)
