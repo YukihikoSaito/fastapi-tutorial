@@ -104,8 +104,9 @@ async def read_item(
 
 @app.put("/items/{item_id}", tags=["items"])
 def update_item(item_id: str, item: Item):
-    json_compatible_item_data = jsonable_encoder(item)
-    fake_db[item_id] = json_compatible_item_data
+    update_item_encoded = jsonable_encoder(item)
+    items[item_id] = update_item_encoded
+    return update_item_encoded
 
 
 @app.get("/items/", tags=["items"])
