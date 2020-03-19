@@ -9,7 +9,8 @@
 # @see https://fastapi.tiangolo.com/tutorial/security/first-steps/
 from fastapi import FastAPI, Query, Path, Body, Header, status, \
     HTTPException, Depends
-from fastapi.security import OAuth2PasswordBearer
+# @see https://fastapi.tiangolo.com/tutorial/security/simple-oauth2/
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 # @see https://fastapi.tiangolo.com/tutorial/encoder/
 from fastapi.encoders import jsonable_encoder
 from enum import Enum
@@ -64,8 +65,14 @@ class UserInDB(UserBase):
     hashed_password: str
 
 
+def get_user(db, username: str):
+    if username in db:
+        user_dict = db[username]
+        return UserInDB(**user_dict)
+
+
 def make_fake_password_hash(raw_password: str):
-    return "super-secret" + raw_password
+    return "fake_hashed_" + raw_password
 
 
 def fake_save_user(user_in: UserIn):
@@ -76,21 +83,65 @@ def fake_save_user(user_in: UserIn):
 
 
 def fake_decode_token(token):
-    return UserBase(
-        username=token + "fake_decoded", email="john@example.com", full_name="John Doe"
-    )
+    # これはチュートリアル用実装のため、セキュリティの意味をなしてないです
+    # 商用環境では適切な修正を行います
+    user = get_user(fake_users_db, token)
+    return user
 
 
 app = FastAPI()
 
 items = {"foo": "The Foo Wrestlers"}
 fake_db = {}
+fake_users_db = {
+    "john_doe": {
+        "username": "john_doe",
+        "full_name": "John Doe",
+        "email": "johndoe@example.com",
+        "hashed_password": "fake_hashed_secret",
+        "disabled": False,
+    },
+    "alice": {
+        "username": "alice",
+        "full_name": "Alice Wonder",
+        "email": "alice@example.com",
+        "hashed_password": "fake_hashed_secret2",
+        "disabled": True,
+    },
+}
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 
 
+# DBに該当ユーザーが存在しているかチェック
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     user = fake_decode_token(token)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid authentication credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     return user
+
+
+# DBの値 (disabled == True) ならば拒否する
+async def get_current_active_user(current_user: UserBase = Depends(get_current_user)):
+    if current_user.disabled:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Inactive user")
+    return current_user
+
+
+@app.post("/token")
+async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+    user_dict = fake_users_db.get(form_data.username)
+    if not user_dict:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Incorrect username or password")
+    user = UserInDB(**user_dict)
+    hashed_password = make_fake_password_hash(form_data.password)
+    if not hashed_password == user.hashed_password:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Incorrect username or password")
+
+    return {"access_token": user.username, "token_type": "bearer"}
 
 
 @app.get("/")
@@ -185,8 +236,9 @@ async def create_item(
 
 # パスの操作は順番に評価されます / 順番に注意
 # @see https://fastapi.tiangolo.com/tutorial/path-params/
+# @see https://fastapi.tiangolo.com/tutorial/security/simple-oauth2/
 @app.get("/users/me", tags=["users"])
-async def read_user_me(current_user: UserBase = Depends(get_current_user)):
+async def read_user_me(current_user: UserBase = Depends(get_current_active_user)):
     return current_user
 
 
