@@ -45,7 +45,8 @@ class Item(BaseModel):
 class UserBase(BaseModel):
     username: str
     email: EmailStr
-    full_name: str = None
+    full_name: Optional[str] = None
+    disabled: Optional[bool] = None
 
 
 # ユーザーから受け付けるデータ構造
@@ -74,11 +75,22 @@ def fake_save_user(user_in: UserIn):
     return user_in_db
 
 
+def fake_decode_token(token):
+    return UserBase(
+        username=token + "fake_decoded", email="john@example.com", full_name="John Doe"
+    )
+
+
 app = FastAPI()
 
 items = {"foo": "The Foo Wrestlers"}
 fake_db = {}
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
+
+
+async def get_current_user(token: str = Depends(oauth2_scheme)):
+    user = fake_decode_token(token)
+    return user
 
 
 @app.get("/")
@@ -174,8 +186,8 @@ async def create_item(
 # パスの操作は順番に評価されます / 順番に注意
 # @see https://fastapi.tiangolo.com/tutorial/path-params/
 @app.get("/users/me", tags=["users"])
-async def read_user_me(token: str = Depends(oauth2_scheme)):
-    return {"user_id": "the current user", "token": token}
+async def read_user_me(current_user: UserBase = Depends(get_current_user)):
+    return current_user
 
 
 @app.get("/users/{user_id}", tags=["users"])
