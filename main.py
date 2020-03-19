@@ -15,6 +15,8 @@ from fastapi import FastAPI, Query, Path, Body, Header, status, \
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 # @see https://fastapi.tiangolo.com/tutorial/encoder/
 from fastapi.encoders import jsonable_encoder
+# @see https://fastapi.tiangolo.com/tutorial/cors/
+from fastapi.middleware.cors import CORSMiddleware
 from enum import Enum
 # @see https://fastapi.tiangolo.com/tutorial/body/
 # @see https://fastapi.tiangolo.com/tutorial/extra-models/
@@ -125,6 +127,20 @@ fake_users_db = {
         "disabled": False,
     }
 }
+
+origins = [
+    "http://localhost.tiangolo.com",
+    "https://localhost.tiangolo.com",
+    "http://localhost",
+    "http://localhost:8080",
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
