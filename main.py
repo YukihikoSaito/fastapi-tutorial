@@ -6,8 +6,10 @@
 # @see https://fastapi.tiangolo.com/tutorial/header-params/
 # @see https://fastapi.tiangolo.com/tutorial/response-status-code/
 # @see https://fastapi.tiangolo.com/tutorial/handling-errors/
-from fastapi import FastAPI, Query, Path, Body, Header, status, HTTPException
-
+# @see https://fastapi.tiangolo.com/tutorial/security/first-steps/
+from fastapi import FastAPI, Query, Path, Body, Header, status, \
+    HTTPException, Depends
+from fastapi.security import OAuth2PasswordBearer
 # @see https://fastapi.tiangolo.com/tutorial/encoder/
 from fastapi.encoders import jsonable_encoder
 from enum import Enum
@@ -76,6 +78,7 @@ app = FastAPI()
 
 items = {"foo": "The Foo Wrestlers"}
 fake_db = {}
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 
 
 @app.get("/")
@@ -171,8 +174,8 @@ async def create_item(
 # パスの操作は順番に評価されます / 順番に注意
 # @see https://fastapi.tiangolo.com/tutorial/path-params/
 @app.get("/users/me", tags=["users"])
-async def read_user_me():
-    return {"user_id": "the current user"}
+async def read_user_me(token: str = Depends(oauth2_scheme)):
+    return {"user_id": "the current user", "token": token}
 
 
 @app.get("/users/{user_id}", tags=["users"])
