@@ -7,6 +7,9 @@
 # @see https://fastapi.tiangolo.com/tutorial/response-status-code/
 # @see https://fastapi.tiangolo.com/tutorial/handling-errors/
 from fastapi import FastAPI, Query, Path, Body, Header, status, HTTPException
+
+# @see https://fastapi.tiangolo.com/tutorial/encoder/
+from fastapi.encoders import jsonable_encoder
 from enum import Enum
 # @see https://fastapi.tiangolo.com/tutorial/body/
 # @see https://fastapi.tiangolo.com/tutorial/extra-models/
@@ -72,6 +75,7 @@ def fake_save_user(user_in: UserIn):
 app = FastAPI()
 
 items = {"foo": "The Foo Wrestlers"}
+fake_db = {}
 
 
 @app.get("/")
@@ -96,6 +100,12 @@ async def read_item(
         limit: Optional[int] = None
 ):
     return {"item_id": item_id, "limit": limit}
+
+
+@app.put("/items/{item_id}", tags=["items"])
+def update_item(item_id: str, item: Item):
+    json_compatible_item_data = jsonable_encoder(item)
+    fake_db[item_id] = json_compatible_item_data
 
 
 @app.get("/items/", tags=["items"])
