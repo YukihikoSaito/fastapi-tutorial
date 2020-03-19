@@ -30,6 +30,9 @@ import jwt
 from jwt import PyJWTError
 from passlib.context import CryptContext
 
+# @see https://fastapi.tiangolo.com/tutorial/debugging/
+import uvicorn
+
 # このような文字列を取得するには↓を実行
 # openssl rand -hex 32
 SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
@@ -354,3 +357,10 @@ async def get_model(model_name: ModelName):
 @app.get("/elements/", tags=["items"], deprecated=True)
 async def read_elements():
     return [{"item_id": "Foo"}]
+
+
+# python main.py と呼ばれた時に実行されます
+# ↓ 次のように、別のファイルがインポートするときには実行されません
+# from main import app
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
