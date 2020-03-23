@@ -21,6 +21,9 @@ from fastapi.security import (
 # @see https://fastapi.tiangolo.com/tutorial/encoder/
 # @see https://fastapi.tiangolo.com/tutorial/cors/
 from fastapi.middleware.cors import CORSMiddleware
+# @see https://fastapi.tiangolo.com/advanced/middleware/
+from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
+# from fastapi.middleware.trustedhost import TrustedHostMiddleware
 # @see https://fastapi.tiangolo.com/advanced/additional-status-codes/
 # @see https://fastapi.tiangolo.com/advanced/custom-response/
 from fastapi.responses import JSONResponse, RedirectResponse, \
@@ -134,6 +137,10 @@ def fake_decode_token(token):
 elastic_apm = make_apm_client({})
 app = FastAPI()
 app.add_middleware(ElasticAPM, client=elastic_apm)
+app.add_middleware(HTTPSRedirectMiddleware)
+# app.add_middleware(
+#     TrustedHostMiddleware, allowed_hosts=["example.com", "*.example.com"]
+# )
 
 
 items = {"foo": "The Foo Wrestlers"}
