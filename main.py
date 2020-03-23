@@ -185,6 +185,13 @@ oauth2_scheme = OAuth2PasswordBearer(
 )
 
 
+# @see https://fastapi.tiangolo.com/advanced/events/
+@app.on_event("shutdown")
+def shutdown_event():
+    with open("application.log", mode="a") as log:
+        log.write("Application shutdown")
+
+
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
