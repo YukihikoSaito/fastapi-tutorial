@@ -33,6 +33,9 @@ from fastapi.responses import JSONResponse, RedirectResponse, \
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
+# @see https://fastapi.tiangolo.com/advanced/extending-openapi/
+from fastapi.openapi.utils import get_openapi
+
 from enum import Enum
 # @see https://fastapi.tiangolo.com/tutorial/body/
 # @see https://fastapi.tiangolo.com/tutorial/extra-models/
@@ -267,6 +270,26 @@ async def get_current_active_user(
 async def fake_video_streamer():
     for i in range(10):
         yield b"some fake video bytes"
+
+
+# @see https://fastapi.tiangolo.com/advanced/extending-openapi/
+def custom_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema
+    openapi_schema = get_openapi(
+        title="OpenAPI Custom title",
+        version="2.5.0",
+        description="This is a very custom OpenAPI schema",
+        routes=app.routes,
+    )
+    openapi_schema["info"]["x-logo"] = {
+        "url": "https://fastapi.tiangolo.com/img/logo-margin/logo-teal.png"
+    }
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
+
+
+app.openapi = custom_openapi
 
 
 @app.middleware("http")
