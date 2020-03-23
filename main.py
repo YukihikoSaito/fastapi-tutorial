@@ -267,7 +267,10 @@ def update_item(item_id: str, item: Item):
     return update_item_encoded
 
 
-@app.get("/items/", tags=["items"])
+# http://127.0.0.1:8000/docs#/items/some_specific_id_you_define
+# http://127.0.0.1:8000/redoc#operation/some_specific_id_you_define
+# ↑ この url で参照出来るようになる
+@app.get("/items/", tags=["items"], operation_id="some_specific_id_you_define")
 async def read_items(
         q: str = Query(
             None,
