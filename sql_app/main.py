@@ -5,7 +5,8 @@ from fastapi import Depends, FastAPI, HTTPException, Request, Response
 from sqlalchemy.orm import Session
 
 from . import crud, models, schemas
-from .database import SessionLocal, engine
+from .database import SessionLocal, engine, database, notes
+from .models import Note, NoteIn
 
 # @see https://www.elastic.co/guide/en/apm/agent/python/master/starlette-support.html
 from elasticapm.contrib.starlette import make_apm_client, ElasticAPM
@@ -27,6 +28,16 @@ async def db_session_middleware(request: Request, call_next):
     finally:
         request.state.db.close()
     return response
+
+
+@app.on_event("startup")
+async def startup():
+    await database.connect()
+
+
+@app.on_event("shutdown")
+async def shutdown():
+    await database.disconnect()
 
 
 # Dependency
@@ -76,3 +87,33 @@ def create_item_for_user(
 def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     items = crud.get_items(db, skip=skip, limit=limit)
     return items
+
+
+# @see https://fastapi.tiangolo.com/advanced/async-sql-databases/
+@app.get("/notes/", response_model=List[Note])
+async def read_notes():
+    query = notes.select()
+    return await database.fetch_all(query)
+
+
+@app.post("/notes/", response_model=Note)
+async def create_note(note: NoteIn):
+    query = notes.insert().values(text=note.text, completed=note.completed)
+    last_record_id = await database.execute(query)
+    # `{**note.dict()}`
+    # ↓
+    # {
+    #     "text": "Some note",
+    #     "completed": False,
+    # }
+    #
+    # ===================================
+    #
+    # {**note.dict(), "id": last_record_id}
+    # ↓
+    # {
+    #     "id": 1,
+    #     "text": "Some note",
+    #     "completed": False,
+    # }
+    return {**note.dict(), "id": last_record_id}

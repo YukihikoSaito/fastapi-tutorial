@@ -3,6 +3,8 @@ from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 from .database import Base
+# @see https://fastapi.tiangolo.com/advanced/async-sql-databases/
+from pydantic import BaseModel
 
 
 class User(Base):
@@ -29,3 +31,15 @@ class Item(Base):
 
     # relationship(関係) を作成
     owner = relationship("User", back_populates="items")
+
+
+# @see https://fastapi.tiangolo.com/advanced/async-sql-databases/
+class NoteIn(BaseModel):
+    text: str
+    completed: bool
+
+
+class Note(BaseModel):
+    id: int
+    text: str
+    completed: bool
