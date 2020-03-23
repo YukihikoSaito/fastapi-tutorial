@@ -30,6 +30,9 @@ import jwt
 from jwt import PyJWTError
 from passlib.context import CryptContext
 
+# @see https://www.elastic.co/guide/en/apm/agent/python/master/starlette-support.html
+from elasticapm.contrib.starlette import make_apm_client, ElasticAPM
+
 # @see https://fastapi.tiangolo.com/tutorial/debugging/
 import uvicorn
 
@@ -117,7 +120,10 @@ def fake_decode_token(token):
     return user
 
 
+elastic_apm = make_apm_client({})
 app = FastAPI()
+app.add_middleware(ElasticAPM, client=elastic_apm)
+
 
 items = {"foo": "The Foo Wrestlers"}
 fake_db = {}

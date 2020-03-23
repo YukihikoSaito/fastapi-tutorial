@@ -7,10 +7,15 @@ from sqlalchemy.orm import Session
 from . import crud, models, schemas
 from .database import SessionLocal, engine
 
+# @see https://www.elastic.co/guide/en/apm/agent/python/master/starlette-support.html
+from elasticapm.contrib.starlette import make_apm_client, ElasticAPM
+
 # データベーステーブルを作成する
 models.Base.metadata.create_all(bind=engine)
 
+elastic_apm = make_apm_client({})
 app = FastAPI()
+app.add_middleware(ElasticAPM, client=elastic_apm)
 
 
 @app.middleware("http")
