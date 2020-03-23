@@ -14,9 +14,11 @@ from fastapi import FastAPI, Query, Path, Body, Header, status, \
 # @see https://fastapi.tiangolo.com/tutorial/security/simple-oauth2/
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 # @see https://fastapi.tiangolo.com/tutorial/encoder/
-from fastapi.encoders import jsonable_encoder
 # @see https://fastapi.tiangolo.com/tutorial/cors/
 from fastapi.middleware.cors import CORSMiddleware
+# @see https://fastapi.tiangolo.com/advanced/additional-status-codes/
+from fastapi.responses import JSONResponse
+
 from enum import Enum
 # @see https://fastapi.tiangolo.com/tutorial/body/
 # @see https://fastapi.tiangolo.com/tutorial/extra-models/
@@ -261,10 +263,16 @@ async def read_item(
 
 
 @app.put("/items/{item_id}", tags=["items"])
-def update_item(item_id: str, item: Item):
-    update_item_encoded = jsonable_encoder(item)
-    items[item_id] = update_item_encoded
-    return update_item_encoded
+async def upsert_item(item_id: str, name: str = Body(None), size: int = Body(None)):
+    if item_id in items:
+        item = items[item_id]
+        item["name"] = name
+        item["size"] = size
+        return item
+    else:
+        item = {"name": name, "size": size}
+        items[item_id] = item
+        return JSONResponse(status_code=status.HTTP_201_CREATED, content=item)
 
 
 # http://127.0.0.1:8000/docs#/items/some_specific_id_you_define
