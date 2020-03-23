@@ -17,7 +17,9 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 # @see https://fastapi.tiangolo.com/tutorial/cors/
 from fastapi.middleware.cors import CORSMiddleware
 # @see https://fastapi.tiangolo.com/advanced/additional-status-codes/
-from fastapi.responses import JSONResponse
+# @see https://fastapi.tiangolo.com/advanced/custom-response/
+from fastapi.responses import JSONResponse, RedirectResponse, \
+    StreamingResponse
 
 from enum import Enum
 # @see https://fastapi.tiangolo.com/tutorial/body/
@@ -213,6 +215,11 @@ async def get_current_active_user(current_user: UserBase = Depends(get_current_u
     return current_user
 
 
+async def fake_video_streamer():
+    for i in range(10):
+        yield b"some fake video bytes"
+
+
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
     start_time = time.time()
@@ -241,6 +248,16 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 @app.get("/")
 async def read_root():
     return {"Hello": "World"}
+
+
+@app.get("/typer")
+async def read_typer():
+    return RedirectResponse("https://typer.tiangolo.com")
+
+
+@app.get("/fake-video-streamer")
+async def main():
+    return StreamingResponse(fake_video_streamer())
 
 
 @app.get("/items-header/{item_id}", tags=["items"])
