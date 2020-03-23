@@ -22,12 +22,16 @@ from fastapi.security import (
 # @see https://fastapi.tiangolo.com/tutorial/cors/
 from fastapi.middleware.cors import CORSMiddleware
 # @see https://fastapi.tiangolo.com/advanced/middleware/
-from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
+# from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 # from fastapi.middleware.trustedhost import TrustedHostMiddleware
 # @see https://fastapi.tiangolo.com/advanced/additional-status-codes/
 # @see https://fastapi.tiangolo.com/advanced/custom-response/
 from fastapi.responses import JSONResponse, RedirectResponse, \
     StreamingResponse
+
+# @see https://fastapi.tiangolo.com/advanced/templates/
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 
 from enum import Enum
 # @see https://fastapi.tiangolo.com/tutorial/body/
@@ -137,10 +141,15 @@ def fake_decode_token(token):
 elastic_apm = make_apm_client({})
 app = FastAPI()
 app.add_middleware(ElasticAPM, client=elastic_apm)
-app.add_middleware(HTTPSRedirectMiddleware)
+# app.add_middleware(HTTPSRedirectMiddleware)
 # app.add_middleware(
 #     TrustedHostMiddleware, allowed_hosts=["example.com", "*.example.com"]
 # )
+
+
+# @see https://fastapi.tiangolo.com/advanced/templates/
+app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
 
 
 items = {"foo": "The Foo Wrestlers"}
@@ -303,6 +312,11 @@ async def read_item_header(item_id: str):
             headers={"X-Error": "There goes my error"},
         )
     return {"item": items[item_id]}
+
+
+@app.get("/items-template/{item_id}")
+async def read_item(request: Request, item_id: str):
+    return templates.TemplateResponse("item.html", {"request": request, "item_id": item_id})
 
 
 @app.get("/items/{item_id}", tags=["items"])
