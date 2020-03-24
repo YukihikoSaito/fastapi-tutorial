@@ -147,9 +147,9 @@ def fake_decode_token(token):
     return user
 
 
-elastic_apm = make_apm_client({})
+# elastic_apm = make_apm_client({})
 app = FastAPI(docs_url=None, redoc_url=None)
-app.add_middleware(ElasticAPM, client=elastic_apm)
+# app.add_middleware(ElasticAPM, client=elastic_apm)
 # app.add_middleware(HTTPSRedirectMiddleware)
 # app.add_middleware(
 #     TrustedHostMiddleware, allowed_hosts=["example.com", "*.example.com"]
