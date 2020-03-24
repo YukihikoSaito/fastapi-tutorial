@@ -90,6 +90,16 @@ class Item(BaseModel):
     images: List[Image] = None
 
 
+# authorize する時に受け取るデータ構造
+class AuthorizeIn(BaseModel):
+    client_id: str
+    client_secret: str
+    grant_type: str
+    username: str
+    password: str
+    scope: str
+
+
 # ユーザー情報のベース(雛形)
 class UserBase(BaseModel):
     username: str
@@ -330,6 +340,95 @@ async def add_process_time_header(request: Request, call_next):
     process_time = time.time() - start_time
     response.headers["X-Process-Time"] = str(process_time)
     return response
+
+
+@app.post(
+    "/v1/auth/authorize", tags=["auth"], response_model=AuthorizeIn,
+    summary="ユーザー認証処理を行い、API実行時に必要なaccess_tokenを取得します",
+    deprecated=True,
+)
+async def auth_authorize(
+        authorize_in: AuthorizeIn = Body(
+            ...,
+            example={
+                "client_id": "41ab74278288",
+                "client_secret": "be7202161f16be5c2e69ddba5c208bad",
+                "grant_type": "password",
+                "username": "user@example.com",
+                "password": "top_secret",
+                "scope": "use",
+            },
+        )
+):
+    """
+    リクエスト情報:
+
+    - **client_id**: 認証用クライアントID
+    - **client_secret**: 認証用クライアントシークレット
+
+    レスポンス情報:
+
+    - **access_token**: 認可トークン
+    - **token_type**: トークンタイプ
+    - **expires_in**: トークン有効期限 [sec]
+    - **refresh_token**: トークンのリフレッシュに使用します
+    - **scope**: 認可されたスコープ(複数存在する場合はカンマ区切り)
+    """
+
+    ret_item = {
+        "access_token": "0596de32-df84-4293-8f3c-9b3d2a93b61b",
+        "token_type": "Bearer",
+        "expires_in": 2592000,
+        "refresh_token": "a1c8f3a7-de7e-4271-912d-79ed9f971722",
+        "scope": "use,agency",
+    }
+    return ret_item
+
+
+@app.post(
+    "/v2/auth/authorize", tags=["auth"], response_model=AuthorizeIn,
+    summary="ユーザー認証処理を行い、API実行時に必要なaccess_tokenを取得します",
+)
+async def auth_authorize(
+        authorize_in: AuthorizeIn = Body(
+            ...,
+            example={
+                "client_id": "41ab74278288",
+                "client_secret": "be7202161f16be5c2e69ddba5c208bad",
+                "grant_type": "password",
+                "username": "user@example.com",
+                "password": "secret_secret",
+                "scope": "use",
+            },
+        )
+):
+    """
+    リクエスト情報:
+
+    - **client_id**: 認証用クライアントID
+    - **client_secret**: 認証用クライアントシークレット
+    - **grant_type**: 認証方式
+    - **username**: ユーザーメールアドレス
+    - **password**: ユーザーパスワード
+    - **scope**: 認可したいスコープ (複数指定する場合はカンマ区切り)
+
+    レスポンス情報:
+
+    - **access_token**: 認可トークン
+    - **token_type**: トークンタイプ
+    - **expires_in**: トークン有効期限 [sec]
+    - **refresh_token**: トークンのリフレッシュに使用します
+    - **scope**: 認可されたスコープ(複数存在する場合はカンマ区切り)
+    """
+
+    ret_item = {
+        "access_token": "0596de32-df84-4293-8f3c-9b3d2a93b61b",
+        "token_type": "Bearer",
+        "expires_in": 2592000,
+        "refresh_token": "a1c8f3a7-de7e-4271-912d-79ed9f971722",
+        "scope": "use,agency",
+    }
+    return ret_item
 
 
 @app.post("/token", response_model=Token)
