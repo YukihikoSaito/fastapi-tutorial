@@ -2,10 +2,8 @@
 on:
   release:
     types:
-      - published
+      - released
       - deleted
-      - unpublished
-      - prereleased
 
 name: Deploy Test
 
@@ -19,16 +17,21 @@ jobs:
         env:
           GITHUB_CONTEXT: ${{ toJson(github.event.release) }}
         run: echo "$GITHUB_CONTEXT"
+      - name: Get latest tag-name
+        id: get-latest-tag-name
+        # @see https://github.com/marketplace/actions/get-latest-release
+        uses: pozetroninc/github-action-get-latest-release@master
+        with:
+            repository: YukihikoSaito/fastapi-tutorial
       - name: replace-tag
         id: replace-tag-name
         # v1.x.x を想定している
         # @see https://inokara.hateblo.jp/entry/2016/02/07/110113
         run : |
-          echo "release.type: ${{ github.event.release.type }}"
           echo "release.tag_name: ${{ github.event.release.tag_name }}"
-          echo "ref: ${{ github.ref }}"
+          echo "latest.tag_name: ${{ steps.get-latest-tag-name.outputs.release }}"
           # replace [.] -> [-]
-          _tag_name=`echo -n ${{ github.event.release.tag_name }}`
+          _tag_name=`echo -n ${{ steps.get-latest-tag-name.outputs.release }}`
           echo ::set-output name=replaced_tag_name::${_tag_name//./-}
       - name: print-tag
         env:
