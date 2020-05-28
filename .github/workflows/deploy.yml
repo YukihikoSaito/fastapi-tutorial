@@ -17,5 +17,6 @@ jobs:
           echo "release.tag_name: ${{ github.event.release.tag_name }}"
           echo "ref: ${{ github.ref }}"
           # replace [.] -> [-]
-          echo ${{ github.event.release.tag_name//./- }}
+          _tag_name=`echo -n ${{ github.event.release.tag_name }}`
+          echo ${_tag_name//./-}
 
