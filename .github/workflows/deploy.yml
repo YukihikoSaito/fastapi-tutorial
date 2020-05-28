@@ -38,8 +38,8 @@ jobs:
       # 最新の tag_name で checkout
       - name: Checkout
         # もし released ならば実行 / deleted のときは不要
-        if: ${{ github.event.action == "released" }}
         uses: actions/checkout@v2
+        if: ${{ github.event.action == 'released' }}
         with:
           # refs/tags/v1.x.x
           ref: "refs/tags/${{ steps.get-latest-tag-name.outputs.release }}"
