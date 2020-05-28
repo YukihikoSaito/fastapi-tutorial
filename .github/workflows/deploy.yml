@@ -37,6 +37,8 @@ jobs:
       # @see https://github.com/actions/checkout
       # 最新の tag_name で checkout
       - name: Checkout
+        # もし released ならば実行 / deleted のときは不要
+        if: github.event.action == "released"
         uses: actions/checkout@v2
         with:
           # refs/tags/v1.x.x
