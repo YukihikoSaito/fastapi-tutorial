@@ -1,0 +1,19 @@
+
+on:
+  release:
+    types: [published]
+
+name: Deploy Test
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: print tag
+        # v1.x.x を想定している
+        run : |
+          echo "release.tag_name: ${{ github.event.release.tag_name }}"
+          echo "ref: ${{ github.ref }}"
+
