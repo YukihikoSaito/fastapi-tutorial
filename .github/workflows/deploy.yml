@@ -18,8 +18,7 @@ jobs:
         # @see https://github.com/marketplace/actions/get-latest-release
         uses: pozetroninc/github-action-get-latest-release@master
         with:
-            owner: YukihikoSaito
-            repo: fastapi-tutorial
+            repository: YukihikoSaito/fastapi-tutorial
       - name: replace-tag
         id: replace-tag-name
         # v1.x.x を想定している
