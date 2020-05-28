@@ -11,12 +11,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: print tag
+      - name: replace-tag
+        id: replace-tag-name
         # v1.x.x を想定している
+        # @see https://inokara.hateblo.jp/entry/2016/02/07/110113
         run : |
           echo "release.tag_name: ${{ github.event.release.tag_name }}"
           echo "ref: ${{ github.ref }}"
           # replace [.] -> [-]
           _tag_name=`echo -n ${{ github.event.release.tag_name }}`
-          echo ${_tag_name//./-}
-
+          echo ::set-output name=replaced_tag_name::${_tag_name//./-}
+      - name: print-tag
+        env:
+          env_key: ${{ steps.replace-tag-name.outputs.replaced_tag_name}}
+        run: |
+          echo ${env_key}
