@@ -15,10 +15,14 @@ jobs:
     steps:
       - name: Get latest tag-name
         id: get-latest-tag-name
-        # @see https://github.com/marketplace/actions/get-latest-release
-        uses: pozetroninc/github-action-get-latest-release@master
+        # @see https://github.com/actions/github-script
+        uses: actions/github-script@v1
         with:
-            repository: ${{ github.repository }}
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            echo "get-latest-tag-name"
+            github.release.release()
+            
       - name: replace-tag
         id: replace-tag-name
         # v1.x.x を想定している
