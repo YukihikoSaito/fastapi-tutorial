@@ -20,6 +20,8 @@ jobs:
         uses: actions/github-script@v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          # result を 文字列にする / default は json 形式
+          result-encoding: string
           script: |
             github.repos.getLatestRelease({
               owner: context.repo.owner,
@@ -32,9 +34,9 @@ jobs:
         # @see https://inokara.hateblo.jp/entry/2016/02/07/110113
         run : |
           echo "event.release.tag_name: ${{ github.event.release.tag_name }}"
-          echo "latest.tag_name: ${{ steps.get-latest-tag-name.outputs.release }}"
+          echo "latest.tag_name: ${{ steps.get-latest-tag-name.outputs.result }}"
           # replace [.] -> [-]
-          _tag_name=`echo -n ${{ steps.get-latest-tag-name.outputs.release }}`
+          _tag_name=`echo -n ${{ steps.get-latest-tag-name.outputs.result }}`
           echo ::set-output name=replaced_tag_name::${_tag_name//./-}
       - name: print-tag
         env:
@@ -49,4 +51,4 @@ jobs:
         if: ${{ github.event.action == 'released' }}
         with:
           # refs/tags/v1.x.x
-          ref: "refs/tags/${{ steps.get-latest-tag-name.outputs.release }}"
+          ref: "refs/tags/${{ steps.get-latest-tag-name.outputs.result }}"
