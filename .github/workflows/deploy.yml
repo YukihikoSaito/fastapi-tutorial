@@ -28,7 +28,7 @@ jobs:
               repo: context.repo.repo
             })
             // console.log(result)
-            console.log(result.data.tag_name)
+            console.log("Tag name to be deployed: " + result.data.tag_name)
             return result.data.tag_name
             
       - name: replace-tag
