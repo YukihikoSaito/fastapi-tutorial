@@ -23,10 +23,11 @@ jobs:
           # result を 文字列にする / default は json 形式
           result-encoding: string
           script: |
-            return github.repos.getLatestRelease({
+            result = github.repos.getLatestRelease({
               owner: context.repo.owner,
               repo: context.repo.repo
             })
+            console.log(result)
             
       - name: replace-tag
         id: replace-tag-name
