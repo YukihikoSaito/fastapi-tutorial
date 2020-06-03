@@ -23,7 +23,7 @@ jobs:
           # result を 文字列にする / default は json 形式
           result-encoding: string
           script: |
-            github.repos.getLatestRelease({
+            return github.repos.getLatestRelease({
               owner: context.repo.owner,
               repo: context.repo.repo
             })
