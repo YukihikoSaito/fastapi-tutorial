@@ -23,16 +23,16 @@ jobs:
           # result を 文字列にする / default は json 形式
           result-encoding: string
           script: |
-            const result = await github.repos.getLatestRelease({
+            return await github.repos.getLatestRelease({
               owner: context.repo.owner,
               repo: context.repo.repo
-            })
+            }).data.tag_name
             //.then((response) => {
             //  return response.data.tag_name
             //});
             // console.log(result)
-            await console.log(result.data.tag_name)
-            return await result.data.tag_name
+            // console.log(result.data.tag_name)
+            //return result.data.tag_name
             
       - name: replace-tag
         id: replace-tag-name
