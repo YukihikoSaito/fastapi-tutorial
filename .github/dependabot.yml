@@ -6,7 +6,7 @@
 version: 2
 updates:
   - package-ecosystem: "docker" # See documentation for possible values
-    directory: "/" # Location of package manifests
+    directory: "/docker/api/" # Location of package manifests
     schedule:
       interval: "daily"
       time: "09:00"
@@ -20,7 +20,7 @@ updates:
       timezone: "Asia/Tokyo"
       
   - package-ecosystem: "pip" # See documentation for possible values
-    directory: "/" # Location of package manifests
+    directory: "/docker/api/" # Location of package manifests
     schedule:
       interval: "daily"
       time: "09:00"
