@@ -1,5 +1,5 @@
 on:
-  # release ブランチへのプルリクがcloseされたタイミングで動く
+  # release ブランチへのプルリクが close されたタイミングで動く
   pull_request:
     # @see https://help.github.com/en/actions/reference/events-that-trigger-workflows#pull-request-event-pull_request
     branches:
@@ -9,15 +9,21 @@ on:
 name: Create Release
 
 jobs:
-  build:
+  release:
     name: Create Release
     runs-on: ubuntu-latest
+    
+    # マージ以外の理由で close された場合にも動いてしまうので、マージされた場合だけに限定します
+    if: github.event.pull_request.merged == true
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
         
-      - uses: actions-ecosystem/action-release-label@v1
-        id: release-label
+      - name: Get release label
+        # プルリクに付与された label を取得 / major,minor,patch どのバージョンを上げるかの判定に利用する
+        # @see https://github.com/actions-ecosystem/action-release-label
+        uses: actions-ecosystem/action-release-label@v1
+        id: get-release-label
         
       - name: Get latest tag-name
         # 最新の tag_name を取得します ex) v1.x.x
@@ -46,10 +52,10 @@ jobs:
       - name: Bump Semantic Versioning
         uses: actions-ecosystem/action-bump-semver@v1
         id: bump-semver
-        if: ${{ steps.release-label.outputs.level != null }}
+        if: ${{ steps.get-release-label.outputs.level != null }}
         with:
           current_version: ${{ steps.get-latest-tag-name.outputs.result }}
-          level: ${{ steps.release-label.outputs.level }}
+          level: ${{ steps.get-release-label.outputs.level }}
     
 
       - name: Create Release
