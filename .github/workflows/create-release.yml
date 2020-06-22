@@ -1,0 +1,65 @@
+on:
+  # release ブランチへのプルリクがcloseされたタイミングで動く
+  pull_request:
+    # @see https://help.github.com/en/actions/reference/events-that-trigger-workflows#pull-request-event-pull_request
+    branches:
+      - release
+    types: [closed]
+
+name: Create Release
+
+jobs:
+  build:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - uses: actions-ecosystem/action-release-label@v1
+        id: release-label
+        
+      - name: Get latest tag-name
+        # 最新の tag_name を取得します ex) v1.x.x
+        # リリース済みの最新 tag_name
+        #   - 以下の状態は最新とみなされません
+        #   - Draft (下書き)状態
+        #   - pre-release (先行リリース)状態
+        id: get-latest-tag-name
+        # @see https://github.com/actions/github-script
+        # @see https://octokit.github.io/rest.js/v16#repos-get-latest-release
+        uses: actions/github-script@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          # result を 文字列にする / default は json 形式
+          result-encoding: string
+          script: |
+            // 非同期なので結果取得まで待つ必要がある
+            const result = await github.repos.getLatestRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            })
+            // console.log(result)
+            console.log("Latest tag name is: " + result.data.tag_name)
+            return result.data.tag_name
+    
+      - name: Bump Semantic Versioning
+        uses: actions-ecosystem/action-bump-semver@v1
+        id: bump-semver
+        if: ${{ steps.release-label.outputs.level != null }}
+        with:
+          current_version: ${{ steps.get-latest-tag-name.outputs.result }}
+          level: ${{ steps.release-label.outputs.level }}
+    
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ steps.bump-semver.outputs.new_version }}
+          release_name: ${{ steps.bump-semver.outputs.new_version }}
+          draft: false
+          prerelease: false
+          
