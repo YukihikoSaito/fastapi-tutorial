@@ -2,6 +2,8 @@
 on:
   release:
     types:
+      - published
+      - created
       - released
       - deleted
 
@@ -13,6 +15,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: echo release type
+        run: |
+          echo "event.action.type: ${{ github.event.action }}"
+          
+          
       - name: Get latest tag-name
         id: get-latest-tag-name
         # @see https://github.com/actions/github-script
@@ -49,9 +56,9 @@ jobs:
       # @see https://github.com/actions/checkout
       # 最新の tag_name で checkout
       - name: Checkout
-        # もし released ならば実行 / deleted のときは不要
+        # deleted のときは不要
         uses: actions/checkout@v2
-        if: ${{ github.event.action == 'released' }}
+        if: ${{ github.event.action != 'deleted' }}
         with:
           # refs/tags/v1.x.x
           ref: "refs/tags/${{ steps.get-latest-tag-name.outputs.result }}"
