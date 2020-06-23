@@ -47,6 +47,6 @@ jobs:
         with:
           tag_name: ${{ steps.bump-semver.outputs.new_version }}
           release_name: ${{ steps.bump-semver.outputs.new_version }}
-          draft: false
+          draft: true
           prerelease: false
           
