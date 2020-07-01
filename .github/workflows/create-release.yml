@@ -27,7 +27,7 @@ jobs:
           # timezone を JST にする
           # カレンダーバージョニング
           # @see https://calver.org/
-          _new_version=`TZ="Asia/Tokyo" date '+%Y.%m.%d%H%M'`
+          _new_version=`TZ="Asia/Tokyo" date '+%y.%-m%-d.%H%M'`
           
           # 後続の処理で new_version で参照出来ます
           echo ::set-output name=new_version::${_new_version}
@@ -40,8 +40,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: ${{ steps.create-new-version.outputs.new_version }}
-          release_name: ${{ steps.create-new-version.outputs.new_version }}
+          tag_name: v${{ steps.create-new-version.outputs.new_version }}
+          release_name: v${{ steps.create-new-version.outputs.new_version }}
           draft: true
           prerelease: false
           
