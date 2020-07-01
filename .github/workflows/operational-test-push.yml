@@ -23,5 +23,6 @@ jobs:
           
           _now=`TZ="Asia/Tokyo" date '+%Y.%m.%d%H%M'`
           echo "v${_now}"
-          
+          _now2=`TZ="Asia/Tokyo" date '+%Y.%m%d.%H%M'`
+          echo "v${_now2}"
           
