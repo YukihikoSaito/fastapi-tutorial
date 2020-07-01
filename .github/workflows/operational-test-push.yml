@@ -21,7 +21,7 @@ jobs:
           # result を 文字列にする / default は json 形式
           result-encoding: string
           script: |
-            let dt = new Date();
+            let dt = new Date().toLocaleString({ timeZone: 'Asia/Tokyo' });
             let year = dt.getFullYear();
             let month = dt.getMonth();
             let day = dt.getDate();
@@ -34,6 +34,7 @@ jobs:
           TAG_NAME: ${{ steps.create_latest_calendar_versioning.outputs.result}}
         run: |
           echo ${TAG_NAME}
-          echo ${date '+v%Y.%m.%d%H%M'}
+          _now=${date '+%Y.%m.%d%H%M'}
+          echo "v${_now}"
           
           
