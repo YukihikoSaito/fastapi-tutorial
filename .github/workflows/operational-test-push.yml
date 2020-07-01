@@ -1,0 +1,39 @@
+name: operational test push
+
+# push された時に発火
+on: [push]
+
+jobs:
+  build:
+    # このジョブは GitHubでホストされている ubuntu 上で実行されます
+    runs-on: ubuntu-latest
+
+    steps:
+      # @see https://github.com/actions/checkout
+      # push された最新HEAD を取得
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: Create latest calendar versioning
+        id: create_latest_calendar_versioning
+        uses: actions/github-script@v2
+        with:
+          # result を 文字列にする / default は json 形式
+          result-encoding: string
+          script: |
+            let dt = new Date();
+            let year = dt.getFullYear();
+            let month = dt.getMonth();
+            let day = dt.getDate();
+            let hours = dt.getHours();
+            let minutes = dt.getMinutes();
+            return "v" + year + "." + month + "." + day + hours + minutes
+            
+       - name: print-tag
+        env:
+          TAG_NAME: ${{ steps.create_latest_calendar_versioning.outputs.result}}
+        run: |
+          echo ${TAG_NAME}
+          
+          
+          
