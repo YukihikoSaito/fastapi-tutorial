@@ -29,11 +29,11 @@ jobs:
             let minutes = dt.getMinutes();
             return "v" + year + "." + month + "." + day + hours + minutes
             
-       - name: print-tag
+      - name: print-tag
         env:
           TAG_NAME: ${{ steps.create_latest_calendar_versioning.outputs.result}}
         run: |
           echo ${TAG_NAME}
-          
+          echo ${date '+v%Y.%m.%d%H%M'}
           
           
