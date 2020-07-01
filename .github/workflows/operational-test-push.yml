@@ -34,7 +34,8 @@ jobs:
           TAG_NAME: ${{ steps.create_latest_calendar_versioning.outputs.result}}
         run: |
           echo ${TAG_NAME}
-          _now=${date '+%Y.%m.%d%H%M'}
+          echo date
+          _now=`date '+%Y.%m.%d%H%M'`
           echo "v${_now}"
           
           
