@@ -18,12 +18,10 @@ jobs:
       - name: print-tag
         run: |
           echo `date`
-          export TZ="+9"
-          echo `date`
           export TZ="Asia/Tokyo"
           echo `date`
           
-          _now=`TZ="JST-9" date '+%Y.%m.%d%H%M'`
+          _now=`TZ="Asia/Tokyo" date '+%Y.%m.%d%H%M'`
           echo "v${_now}"
           
           
