@@ -44,7 +44,7 @@ jobs:
         # @see https://github.com/brpaz/hadolint-action
         uses: brpaz/hadolint-action@v1.1.0
         with:
-          dockerfile: "docker/api"
+          dockerfile: "docker/api/Dockerfile"
 
       ################################
       # Run Linter against code base #
