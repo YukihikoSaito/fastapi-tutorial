@@ -1,7 +1,7 @@
 FROM python:3.8.3
 
 WORKDIR /usr/src/server
-ADD requirements.txt .
+COPY requirements.txt .
 # requirements.txtにリストされたパッケージをインストールする
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
