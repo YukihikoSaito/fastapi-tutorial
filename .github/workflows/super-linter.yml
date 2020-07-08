@@ -40,6 +40,12 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
+      - name: Lint Dockerfile
+        # @see https://github.com/brpaz/hadolint-action
+        uses: brpaz/hadolint-action@v1.1.0
+        with:
+          dockerfile: "docker/api/Dockerfile"
+
       ################################
       # Run Linter against code base #
       ################################
