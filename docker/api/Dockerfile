@@ -1,4 +1,4 @@
-FROM python:3.8.3
+FROM python:3.8.4
 
 WORKDIR /usr/src/server
 COPY requirements.txt .
