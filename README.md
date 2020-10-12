@@ -3,11 +3,11 @@ https://github.com/tiangolo/fastapi の入門
 
 # 環境構築
 ## 必須要件
-venv で Python3.7 系
-https://docs.python.org/ja/3.7/library/venv.html
+venv で Python3.9 系
+https://docs.python.org/ja/3.9/library/venv.html
 ```
 % python --version
-Python 3.7.7
+Python 3.9.0
 ```
 
 https://www.starlette.io/
