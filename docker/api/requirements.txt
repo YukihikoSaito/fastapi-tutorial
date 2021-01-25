@@ -1,5 +1,5 @@
 aiofiles==0.6.0
-aiosqlite==0.16.0
+aiosqlite==0.16.1
 aniso8601==8.1.0
 async-exit-stack==1.0.1
 async-generator==1.10
