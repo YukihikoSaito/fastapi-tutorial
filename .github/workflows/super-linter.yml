@@ -45,7 +45,7 @@ jobs:
 
       - name: Lint Dockerfile
         # @see https://github.com/brpaz/hadolint-action
-        uses: brpaz/hadolint-action@v1.3.1
+        uses: brpaz/hadolint-action@v1.4.0
         with:
           dockerfile: "docker/api/Dockerfile"
 
