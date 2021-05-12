@@ -57,7 +57,7 @@ jobs:
       # 最新の tag_name で checkout
       - name: Checkout
         # deleted のときは不要
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.3.4
         if: ${{ github.event.action != 'deleted' }}
         with:
           # refs/tags/v1.x.x
