@@ -12,7 +12,7 @@ jobs:
       # @see https://github.com/actions/checkout
       # push された最新HEAD を取得
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.3.4
       
             
       - name: print-tag
