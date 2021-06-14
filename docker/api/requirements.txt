@@ -11,7 +11,7 @@ chardet==4.0.0
 click==8.0.1
 databases==0.4.3
 dnspython==2.1.0
-elastic-apm==6.2.1
+elastic-apm==6.2.2
 email-validator==1.1.2
 fastapi==0.65.1
 graphene==2.1.8
