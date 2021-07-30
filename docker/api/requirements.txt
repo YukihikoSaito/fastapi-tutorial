@@ -44,7 +44,7 @@ requests==2.26.0
 Rx==3.2.0
 six==1.16.0
 SQLAlchemy==1.4.21
-starlette==0.15.0
+starlette==0.16.0
 ujson==4.0.2
 urllib3==1.26.6
 uvicorn==0.14.0
