@@ -24,7 +24,7 @@ jobs:
         id: get-latest-tag-name
         # @see https://github.com/actions/github-script
         # @see https://octokit.github.io/rest.js/v16#repos-get-latest-release
-        uses: actions/github-script@v4.0.2
+        uses: actions/github-script@v4.1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           # result を 文字列にする / default は json 形式
