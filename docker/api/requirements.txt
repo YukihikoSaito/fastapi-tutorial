@@ -45,7 +45,7 @@ Rx==3.2.0
 six==1.16.0
 SQLAlchemy==1.4.28
 starlette==0.17.1
-ujson==4.3.0
+ujson==5.1.0
 urllib3==1.26.7
 uvicorn==0.16.0
 uvloop==0.16.0
