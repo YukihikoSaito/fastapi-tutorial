@@ -47,7 +47,7 @@ SQLAlchemy==1.4.29
 starlette==0.17.1
 ujson==5.1.0
 urllib3==1.26.8
-uvicorn==0.16.0
+uvicorn==0.17.0
 uvloop==0.16.0
 wcwidth==0.2.5
 websockets==10.1
