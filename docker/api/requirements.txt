@@ -17,7 +17,7 @@ fastapi==0.72.0
 graphene==3.0
 graphql-core==3.2.0
 graphql-relay==3.1.0
-h11==0.12.0
+h11==0.13.0
 httptools==0.3.0
 idna==3.3
 importlib-metadata==4.10.1
