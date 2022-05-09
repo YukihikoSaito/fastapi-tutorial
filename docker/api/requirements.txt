@@ -24,7 +24,7 @@ importlib-metadata==4.11.3
 itsdangerous==2.1.2
 Jinja2==3.1.1
 MarkupSafe==2.1.1
-more-itertools==8.12.0
+more-itertools==8.13.0
 mysqlclient==2.1.0
 packaging==21.3
 passlib==1.7.4
@@ -43,7 +43,7 @@ PyYAML==6.0
 requests==2.27.1
 Rx==3.2.0
 six==1.16.0
-SQLAlchemy==1.4.35
+SQLAlchemy==1.4.36
 starlette==0.20.0
 ujson==5.2.0
 urllib3==1.26.9
