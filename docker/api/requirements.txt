@@ -36,7 +36,7 @@ pycparser==2.21
 pydantic==1.9.0
 PyJWT==2.3.0
 PyMySQL==1.0.2
-pyparsing==3.0.8
+pyparsing==3.0.9
 pytest==7.1.2
 python-multipart==0.0.5
 PyYAML==6.0
