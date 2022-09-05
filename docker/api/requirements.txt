@@ -13,7 +13,7 @@ databases==0.6.1
 dnspython==2.2.1
 elastic-apm==6.11.0
 email-validator==1.2.1
-fastapi==0.79.0
+fastapi==0.81.0
 graphene==3.1
 graphql-core==3.2.1
 graphql-relay==3.2.0
