@@ -33,7 +33,7 @@ promise==2.3
 psutil==5.9.2
 py==1.11.0
 pycparser==2.21
-pydantic==1.10.1
+pydantic==1.10.2
 PyJWT==2.4.0
 PyMySQL==1.0.2
 pyparsing==3.0.9
@@ -45,7 +45,7 @@ Rx==3.2.0
 six==1.16.0
 SQLAlchemy==1.4.41
 starlette==0.20.4
-ujson==5.4.0
+ujson==5.5.0
 urllib3==1.26.12
 uvicorn==0.18.3
 uvloop==0.16.0
