@@ -4,7 +4,7 @@ aniso8601==9.0.1
 async-exit-stack==1.0.1
 async-generator==1.10
 attrs==22.1.0
-bcrypt==4.0.0
+bcrypt==4.0.1
 certifi==2022.9.24
 cffi==1.15.1
 chardet==5.0.0
