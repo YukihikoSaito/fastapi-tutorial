@@ -1,5 +1,7 @@
 FROM python:3.11.2
 
+LABEL org.opencontainers.image.source="https://hub.docker.com/_/python"
+
 WORKDIR /usr/src/server
 COPY requirements.txt .
 # requirements.txtにリストされたパッケージをインストールする
