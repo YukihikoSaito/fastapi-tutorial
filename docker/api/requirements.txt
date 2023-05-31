@@ -32,7 +32,7 @@ pluggy==1.0.0
 promise==2.3
 psutil==5.9.4
 pycparser==2.21
-pydantic==1.10.7
+pydantic==1.10.8
 PyJWT==2.6.0
 PyMySQL==1.0.2
 pyparsing==3.0.9
