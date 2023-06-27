@@ -1,4 +1,4 @@
-FROM python:3.11.3
+FROM python:3.11.4
 
 LABEL org.opencontainers.image.source="https://hub.docker.com/_/python"
 
